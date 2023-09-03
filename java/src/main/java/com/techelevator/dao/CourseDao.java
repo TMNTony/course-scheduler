@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface CourseDao {
     List<Course> allCourses();
-    List<Course> remainingCourses();
+    List<Course> remainingCourses(int id);
     int totalHours();
     int remainingHours();
 

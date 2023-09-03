@@ -1,5 +1,6 @@
 package com.techelevator.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Course {
@@ -29,9 +30,11 @@ public class Course {
         this.courseName = courseName;
         this.hours = hours;
         this.timesToTake = timesToTake;
+        this.prerequisites = new ArrayList<>();
     }
 
     public Course() {
+        this.prerequisites = new ArrayList<>();
     }
 
     ;
@@ -74,6 +77,9 @@ public class Course {
 
     public void setPrerequisites(List<Course> prerequisites) {
         this.prerequisites = prerequisites;
+    }
+    public void addPrerequisite(Course course){
+        this.prerequisites.add(course);
     }
 
     public int getTimesToTake() {

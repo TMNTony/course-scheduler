@@ -27,6 +27,7 @@ public class JdbcCourseDao implements CourseDao {
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
         while (results.next()) {
             Course course = mapRowToCourse(results);
+            course.setPrerequisites(getPrerequisitesForCourse(course));
             courses.add(course);
         }
 
@@ -34,15 +35,11 @@ public class JdbcCourseDao implements CourseDao {
     }
 
     @Override
-    public List<Course> remainingCourses() {
-        return null;
-    }
-
-    public List<Course> remainingCourses(int userId) {
+    public List<Course> remainingCourses(int id) {
         List<Course> remainingCourses = new ArrayList<>();
         String sql = "SELECT * FROM courses WHERE course_id NOT IN (SELECT course_id FROM course_enrollments WHERE user_id = ?)";
 
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, id);
         while (results.next()) {
             Course course = mapRowToCourse(results);
             remainingCourses.add(course);
@@ -101,6 +98,44 @@ public class JdbcCourseDao implements CourseDao {
     }
 
     public List<Course> performTopologicalSort() {
-        return courseGraph.performTopologicalSort();
+        // Create an instance of CourseGraph
+        CourseGraph courseGraph = new CourseGraph();
+
+        // Retrieve all courses from the database
+        List<Course> allCourses = allCourses();
+
+        // Add each course to the CourseGraph
+        for (Course course : allCourses) {
+            courseGraph.addCourse(course);
+
+            // Fetch prerequisites for the current course from the database
+            List<Course> prerequisites = course.getPrerequisites();
+
+            // Add prerequisites to the CourseGraph
+            for (Course prerequisite : prerequisites) {
+                courseGraph.addPrerequisite(course, prerequisite);
+
+            }
+        }
+
+        // Perform topological sort on the CourseGraph
+        List<Course> sortedCourses = courseGraph.performTopologicalSort();
+
+        return sortedCourses;
+    }
+
+    private List<Course> getPrerequisitesForCourse(Course course) {
+        List<Course> prerequisites = new ArrayList<>();
+        String sql = "SELECT c.course_id, c.course_number, c.course_name, c.hours, c.times_to_take " +
+                "FROM courses c " +
+                "JOIN course_prerequisites cp " +
+                "ON c.course_id = cp.prerequisite_course_id " +
+                "WHERE cp.course_id = ?";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, course.getCourseId());
+        while (results.next()) {
+            Course prerequisite = mapRowToCourse(results);
+            prerequisites.add(prerequisite);
+        }
+        return prerequisites;
     }
 }
