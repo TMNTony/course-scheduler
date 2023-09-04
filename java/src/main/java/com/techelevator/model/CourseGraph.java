@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Component
 public class CourseGraph {
     private DefaultDirectedGraph<Course, DefaultEdge> graph;
@@ -20,19 +21,11 @@ public class CourseGraph {
         if (!graph.containsVertex(course)) {
             graph.addVertex(course);
         } else {
-
             System.out.println("Course " + course.getCourseNumber() + " already exists in the graph.");
         }
     }
 
     public void addPrerequisite(Course course, Course prerequisite) {
-        if (!graph.containsVertex(course)) {
-            addCourse(course);
-        }
-        if (!graph.containsVertex(prerequisite)) {
-            addCourse(prerequisite);
-        }
-
         graph.addEdge(prerequisite, course);
     }
 
@@ -53,6 +46,7 @@ public class CourseGraph {
         }
         return sortedCourses;
     }
+
     public boolean hasCircularDependencies() {
         CycleDetector<Course, DefaultEdge> cycleDetector = new CycleDetector<>(graph);
         return cycleDetector.detectCycles();

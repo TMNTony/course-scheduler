@@ -12,5 +12,5 @@ public interface CourseDao {
 
     boolean hasCircularDependencies();
 
-    List<Course> performTopologicalSort();
+    List<Course> performTopologicalSort(int id);
 }

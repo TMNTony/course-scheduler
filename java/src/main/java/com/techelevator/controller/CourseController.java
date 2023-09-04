@@ -20,12 +20,12 @@ public class CourseController {
         this.courseDao = courseDao;
     }
 
-    @RequestMapping(path = "/courses/recommended-order", method = RequestMethod.GET)
-    public ResponseEntity<List<Course>> getRecommendedCourseOrder() {
+    @RequestMapping(path = "/courses/{id}/recommended-order", method = RequestMethod.GET)
+    public ResponseEntity<List<Course>> getRecommendedCourseOrder(@PathVariable int id) {
         if (courseDao.hasCircularDependencies()) {
             return ResponseEntity.badRequest().body(null);
         } else {
-            List<Course> sortedCourses = courseDao.performTopologicalSort();
+            List<Course> sortedCourses = courseDao.performTopologicalSort(id);
             return ResponseEntity.ok(sortedCourses);
         }
     }

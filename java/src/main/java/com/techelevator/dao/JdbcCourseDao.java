@@ -37,14 +37,14 @@ public class JdbcCourseDao implements CourseDao {
     @Override
     public List<Course> remainingCourses(int id) {
         List<Course> remainingCourses = new ArrayList<>();
-        String sql = "SELECT * FROM courses WHERE course_id NOT IN (SELECT course_id FROM course_enrollments WHERE user_id = ?)";
+        String sql = "SELECT * FROM courses WHERE course_id NOT IN (SELECT course_id FROM course_enrollments WHERE user_id = ?) ORDER BY course_number";
 
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, id);
         while (results.next()) {
             Course course = mapRowToCourse(results);
+            course.setPrerequisites(getPrerequisitesForCourse(course));
             remainingCourses.add(course);
         }
-
         return remainingCourses;
     }
 
@@ -97,31 +97,31 @@ public class JdbcCourseDao implements CourseDao {
         return courseGraph.hasCircularDependencies();
     }
 
-    public List<Course> performTopologicalSort() {
+    public List<Course> performTopologicalSort(int id) {
         // Create an instance of CourseGraph
         CourseGraph courseGraph = new CourseGraph();
 
-        // Retrieve all courses from the database
-        List<Course> allCourses = allCourses();
+        // Retrieve all courses from the database that student is yet to take
+        List<Course> remainingCourses = remainingCourses(id);
 
         // Add each course to the CourseGraph
-        for (Course course : allCourses) {
+        for (Course course : remainingCourses) {
             courseGraph.addCourse(course);
+        }
+        // Add prerequisite edges to vertexes with prerequisite courses
+        for (Course course : remainingCourses) {
+            if (course.getPrerequisites().size() > 0) {
+                // Fetch prerequisites for the current course from the database
+                List<Course> prerequisites = getPrerequisitesForCourse(course);
 
-            // Fetch prerequisites for the current course from the database
-            List<Course> prerequisites = course.getPrerequisites();
-
-            // Add prerequisites to the CourseGraph
-            for (Course prerequisite : prerequisites) {
-                courseGraph.addPrerequisite(course, prerequisite);
-
+                // Add prerequisites to the CourseGraph
+                for (Course prerequisite : prerequisites) {
+                    courseGraph.addPrerequisite(course, prerequisite);
+                }
             }
         }
 
-        // Perform topological sort on the CourseGraph
-        List<Course> sortedCourses = courseGraph.performTopologicalSort();
-
-        return sortedCourses;
+        return courseGraph.performTopologicalSort();
     }
 
     private List<Course> getPrerequisitesForCourse(Course course) {
