@@ -1,5 +1,6 @@
-package com.techelevator.model;
+package com.techelevator;
 
+import com.techelevator.model.Course;
 import org.jgrapht.alg.cycle.CycleDetector;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;

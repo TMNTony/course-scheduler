@@ -1,7 +1,7 @@
 package com.techelevator.dao;
 
 import com.techelevator.model.Course;
-import com.techelevator.model.CourseGraph;
+import com.techelevator.CourseGraph;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
@@ -37,7 +37,9 @@ public class JdbcCourseDao implements CourseDao {
     @Override
     public List<Course> remainingCourses(int id) {
         List<Course> remainingCourses = new ArrayList<>();
-        String sql = "SELECT * FROM courses WHERE course_id NOT IN (SELECT course_id FROM course_enrollments WHERE user_id = ?) ORDER BY course_number";
+        String sql = "SELECT * FROM courses WHERE course_id NOT IN (SELECT course_id FROM course_enrollments WHERE user_id = ?) " +
+                "ORDER BY course_number";
+
 
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, id);
         while (results.next()) {
@@ -86,6 +88,7 @@ public class JdbcCourseDao implements CourseDao {
     private Course mapRowToCourse(SqlRowSet rs) {
         Course course = new Course();
         course.setCourseId(rs.getInt("course_id"));
+        course.setCoursePrefix(rs.getString("course_prefix"));
         course.setCourseNumber(rs.getString("course_number"));
         course.setCourseName(rs.getString("course_name"));
         course.setHours(rs.getInt("hours"));
@@ -126,7 +129,7 @@ public class JdbcCourseDao implements CourseDao {
 
     private List<Course> getPrerequisitesForCourse(Course course) {
         List<Course> prerequisites = new ArrayList<>();
-        String sql = "SELECT c.course_id, c.course_number, c.course_name, c.hours, c.times_to_take " +
+        String sql = "SELECT c.course_id, c. course_prefix, c.course_number, c.course_name, c.hours, c.times_to_take " +
                 "FROM courses c " +
                 "JOIN course_prerequisites cp " +
                 "ON c.course_id = cp.prerequisite_course_id " +

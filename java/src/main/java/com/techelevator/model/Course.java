@@ -8,6 +8,8 @@ public class Course {
 
 
     int courseId;
+
+    String coursePrefix;
     String courseNumber;
     String courseName;
     int hours;
@@ -16,8 +18,9 @@ public class Course {
     int timesToTake;
     List<Course> prerequisites;
 
-    public Course(int courseId, String courseNumber, String courseName, int hours, int timesToTake, List<Course> prerequisites) {
+    public Course(int courseId, String coursePrefix, String courseNumber, String courseName, int hours, int timesToTake, List<Course> prerequisites) {
         this.courseId = courseId;
+        this.coursePrefix = coursePrefix;
         this.courseNumber = courseNumber;
         this.courseName = courseName;
         this.hours = hours;
@@ -25,8 +28,9 @@ public class Course {
         this.prerequisites = prerequisites;
     }
 
-    public Course(int courseId, String courseNumber, String courseName, int hours, int timesToTake) {
+    public Course(int courseId, String coursePrefix, String courseNumber, String courseName, int hours, int timesToTake) {
         this.courseId = courseId;
+        this.coursePrefix = coursePrefix;
         this.courseNumber = courseNumber;
         this.courseName = courseName;
         this.hours = hours;
@@ -47,6 +51,15 @@ public class Course {
     public void setCourseId(int courseId) {
         this.courseId = courseId;
     }
+
+    public String getCoursePrefix() {
+        return coursePrefix;
+    }
+
+    public void setCoursePrefix(String coursePrefix) {
+        this.coursePrefix = coursePrefix;
+    }
+
 
     public String getCourseNumber() {
         return courseNumber;
@@ -79,7 +92,8 @@ public class Course {
     public void setPrerequisites(List<Course> prerequisites) {
         this.prerequisites = prerequisites;
     }
-    public void addPrerequisite(Course course){
+
+    public void addPrerequisite(Course course) {
         this.prerequisites.add(course);
     }
 
@@ -91,7 +105,7 @@ public class Course {
         this.timesToTake = timesToTake;
     }
 
-//    @Override
+    //    @Override
 //    public String toString() {
 //        return "Course{" +
 //                "courseId=" + courseId +

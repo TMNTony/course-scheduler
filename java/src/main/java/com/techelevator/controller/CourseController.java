@@ -1,7 +1,9 @@
 package com.techelevator.controller;
 
+import com.techelevator.CourseScheduler;
 import com.techelevator.dao.CourseDao;
 import com.techelevator.model.Course;
+import com.techelevator.model.Semester;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,12 +23,14 @@ public class CourseController {
     }
 
     @RequestMapping(path = "/courses/{id}/recommended-order", method = RequestMethod.GET)
-    public ResponseEntity<List<Course>> getRecommendedCourseOrder(@PathVariable int id) {
+    public ResponseEntity<List<Semester>> getRecommendedCourseOrder(@PathVariable int id) {
+        List<Course> sortedCourses = courseDao.performTopologicalSort(id);
+        CourseScheduler courseScheduler = new CourseScheduler(sortedCourses);
         if (courseDao.hasCircularDependencies()) {
             return ResponseEntity.badRequest().body(null);
         } else {
-            List<Course> sortedCourses = courseDao.performTopologicalSort(id);
-            return ResponseEntity.ok(sortedCourses);
+            List<Semester> semesters = courseScheduler.generateSchedule();
+            return ResponseEntity.ok(semesters);
         }
     }
 

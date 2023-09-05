@@ -5,19 +5,18 @@ import java.util.List;
 
 public class Semester {
     private int semesterId;
-    private int totalHours;
     private List<Course> courses;
 
-    public Semester(){
+    public Semester(int semesterId){
         this.courses = new ArrayList<>();
+        this.semesterId = semesterId;
     }
     public Semester(Semester semester){
         this.semesterId = semester.semesterId;
-        this. totalHours = semester.getTotalHours();
         this.courses = semester.getCourses();
     }
     public void addCourse(Course course){
-        if (totalHours + course.getHours() <= 18) {
+        if (getTotalHours() + course.getHours() <= 18) {
             courses.add(course);
         }
     }
@@ -30,6 +29,10 @@ public class Semester {
     }
 
     public int getTotalHours() {
+        int totalHours = 0;
+        for (Course course : courses) {
+            totalHours += course.getHours();
+        }
         return totalHours;
     }
 
