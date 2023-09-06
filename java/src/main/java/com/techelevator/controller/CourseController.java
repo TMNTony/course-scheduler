@@ -25,7 +25,8 @@ public class CourseController {
     @RequestMapping(path = "/courses/{id}/recommended-order", method = RequestMethod.GET)
     public ResponseEntity<List<Semester>> getRecommendedCourseOrder(@PathVariable int id) {
         List<Course> sortedCourses = courseDao.performTopologicalSort(id);
-        CourseScheduler courseScheduler = new CourseScheduler(sortedCourses);
+        int numOfSemesters = (int) Math.ceil((double) (courseDao.remainingHours(id) - 13) / 18);
+        CourseScheduler courseScheduler = new CourseScheduler(sortedCourses, numOfSemesters);
         if (courseDao.hasCircularDependencies()) {
             return ResponseEntity.badRequest().body(null);
         } else {

@@ -12,17 +12,17 @@ public class CourseScheduler {
     private int unchangedPasses = 0;
     private List<Semester> previousSchedule = new ArrayList<>();
 
-    public CourseScheduler(List<Course> remainingCourses) {
+    public CourseScheduler(List<Course> remainingCourses, int numOfSemesters) {
         this.remainingCourses = new ArrayList<>(remainingCourses);
         this.semesters = new ArrayList<>();
-        initializeSemesters(7);
+        initializeSemesters(numOfSemesters);
     }
 
     //    Allows instructor to override max hours for semester
-    public CourseScheduler(List<Course> remainingCourses, int maxHoursPerSemester) {
+    public CourseScheduler(List<Course> remainingCourses, int numOfSemesters, int maxHoursPerSemester) {
         this.remainingCourses = remainingCourses;
         this.semesters = new ArrayList<>();
-        initializeSemesters(7);
+        initializeSemesters(numOfSemesters);
         this.maxHoursPerSemester = maxHoursPerSemester;
     }
 
@@ -109,7 +109,7 @@ public class CourseScheduler {
                 continueScheduling = false;
             }
         }
-        Semester finalSemester = new Semester(8);
+        Semester finalSemester = new Semester(semesters.size() + 1);
         for (Course teaching : studentTeaching) {
             finalSemester.addCourse(teaching);
         }

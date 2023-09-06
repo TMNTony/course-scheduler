@@ -7,8 +7,10 @@ import java.util.List;
 public interface CourseDao {
     List<Course> allCourses();
     List<Course> remainingCourses(int id);
+
+    int remainingHours(int userId);
+
     int totalHours();
-    int remainingHours();
 
     boolean hasCircularDependencies();
 

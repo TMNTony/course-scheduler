@@ -50,23 +50,17 @@ public class JdbcCourseDao implements CourseDao {
         return remainingCourses;
     }
 
-    int remainingHours(int userId) {
-        int remainingHours = totalHours();
-        String sql = "SELECT c.course_id, c.hours, c.times_to_take, COALESCE(SUM(ce.times_taken), 0) AS total_times_taken " +
-                "FROM courses c " +
-                "LEFT JOIN course_enrollments ce ON c.course_id = ce.course_id " +
-                "WHERE ce.user_id = ? " +
-                "GROUP BY c.course_id, c.hours, c.times_to_take";
-
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
-        while (results.next()) {
-            Course course = mapRowToCourse(results);
-            int timesTaken = results.getInt("total_times_taken");
-            remainingHours -= course.getHours() * (course.getTimesToTake() - timesTaken);
+    @Override
+    public int remainingHours(int userId) {
+        int remainingHours = 0;
+        List<Course> remainingCourses = remainingCourses(userId);
+        for (Course course : remainingCourses){
+            remainingHours += course.getHours() * course.getTimesToTake();
         }
         return remainingHours;
     }
 
+    @Override
     public int totalHours() {
         int totalHours = 0;
         String sql = "SELECT course_id, hours, times_to_take FROM courses";
@@ -77,11 +71,6 @@ public class JdbcCourseDao implements CourseDao {
             totalHours += course.getHours() * course.getTimesToTake();
         }
         return totalHours;
-    }
-
-    @Override
-    public int remainingHours() {
-        return 0;
     }
 
 
