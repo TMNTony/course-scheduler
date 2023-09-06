@@ -15,29 +15,37 @@ public class CourseScheduler {
     public CourseScheduler(List<Course> remainingCourses) {
         this.remainingCourses = new ArrayList<>(remainingCourses);
         this.semesters = new ArrayList<>();
-        initializeSemesters(8);
+        initializeSemesters(7);
     }
 
     //    Allows instructor to override max hours for semester
     public CourseScheduler(List<Course> remainingCourses, int maxHoursPerSemester) {
         this.remainingCourses = remainingCourses;
         this.semesters = new ArrayList<>();
-        initializeSemesters(8);
+        initializeSemesters(7);
         this.maxHoursPerSemester = maxHoursPerSemester;
     }
 
     private void initializeSemesters(int numSemesters) {
         for (int i = 0; i < numSemesters; i++) {
-            semesters.add(new Semester(i));
+            semesters.add(new Semester(i + 1));
         }
     }
 
     public List<Semester> generateSchedule() {
         List<Course> remainingCoursesWithMUPrefix = new ArrayList<>();
         List<Course> remainingCoursesWithoutMUPrefix = new ArrayList<>();
+        List<Course> studentTeaching = new ArrayList<>();
 
         for (Course course : remainingCourses) {
-            if (course.getCoursePrefix().startsWith("MU")) {
+            if (course.getCourseId() == 55 || course.getCourseId() == 54){
+                studentTeaching.add(course);
+            } else if (course.getCoursePrefix().startsWith("MU")) {
+                if (course.getTimesToTake() > 1) {
+                    for (int i = 1; i < course.getTimesToTake(); i++){
+                        remainingCoursesWithMUPrefix.add(course);
+                    }
+                }
                 remainingCoursesWithMUPrefix.add(course);
             } else {
                 remainingCoursesWithoutMUPrefix.add(course);
@@ -51,21 +59,19 @@ public class CourseScheduler {
             passCount++;
 
             // First Pass: Assign courses with "MU" prefix based on prerequisites and credit hour limits
-            for (int i = 0; i < semesters.size(); i++) {
-                Semester semester = semesters.get(i);
-                ListIterator<Course> courseIterator = remainingCoursesWithMUPrefix.listIterator();
-                while (courseIterator.hasNext()) {
-                    Course course = courseIterator.next();
-                    if (courseHasNoUnscheduledPrerequisites(course, semesters)) {
-                        if (courseFitsInSemester(course, semester, this.maxHoursPerSemester)) {
+            for (Semester semester : semesters) {
+                for (Course course : new ArrayList<>(remainingCoursesWithMUPrefix)) {
+                    if (courseHasNoUnscheduledPrerequisites(course, semesters) && noPrerequisitesInSemester(course, semester) && noDuplicateCourses(course, semester)) {
+                        if (courseFitsInSemester(course, semester, maxHoursPerSemester)) {
                             semester.addCourse(course);
-                            courseIterator.remove(); // Remove the course safely
+                            remainingCoursesWithMUPrefix.remove(course); // Remove the course safely
                         } else {
-                            if (i + 1 < semesters.size()) {
-                                Semester nextSemester = semesters.get(i + 1);
-                                if (courseFitsInSemester(course, nextSemester, this.maxHoursPerSemester)) {
+                            int nextSemesterIndex = semesters.indexOf(semester) + 1;
+                            if (nextSemesterIndex < semesters.size()) {
+                                Semester nextSemester = semesters.get(nextSemesterIndex);
+                                if (courseFitsInSemester(course, nextSemester, maxHoursPerSemester)) {
                                     nextSemester.addCourse(course);
-                                    courseIterator.remove(); // Remove the course safely
+                                    remainingCoursesWithMUPrefix.remove(course); // Remove the course safely
                                 }
                             }
                         }
@@ -74,27 +80,26 @@ public class CourseScheduler {
             }
 
             // Second Pass: Assign other courses based on prerequisites and credit hour limits
-            for (int i = 0; i < semesters.size(); i++) {
-                Semester semester = semesters.get(i);
-                ListIterator<Course> courseIterator = remainingCoursesWithoutMUPrefix.listIterator();
-                while (courseIterator.hasNext()) {
-                    Course course = courseIterator.next();
-                    if (courseHasNoUnscheduledPrerequisites(course, semesters)) {
-                        if (courseFitsInSemester(course, semester, this.maxHoursPerSemester)) {
+            for (Semester semester : semesters) {
+                for (Course course : new ArrayList<>(remainingCoursesWithoutMUPrefix)) {
+                    if (courseHasNoUnscheduledPrerequisites(course, semesters) && noPrerequisitesInSemester(course, semester)) {
+                        if (courseFitsInSemester(course, semester, maxHoursPerSemester) ) {
                             semester.addCourse(course);
-                            courseIterator.remove(); // Remove the course safely
+                            remainingCoursesWithoutMUPrefix.remove(course); // Remove the course safely
                         } else {
-                            if (i + 1 < semesters.size()) {
-                                Semester nextSemester = semesters.get(i + 1);
-                                if (courseFitsInSemester(course, nextSemester, this.maxHoursPerSemester)) {
+                            int nextSemesterIndex = semesters.indexOf(semester) + 1;
+                            if (nextSemesterIndex < semesters.size()) {
+                                Semester nextSemester = semesters.get(nextSemesterIndex);
+                                if (courseFitsInSemester(course, nextSemester, maxHoursPerSemester)) {
                                     nextSemester.addCourse(course);
-                                    courseIterator.remove(); // Remove the course safely
+                                    remainingCoursesWithoutMUPrefix.remove(course); // Remove the course safely
                                 }
                             }
                         }
                     }
                 }
             }
+
 
             // Additional passes: Refine the schedule (e.g., reassign unassigned courses, reorder semesters, adjust limits)
 
@@ -104,9 +109,14 @@ public class CourseScheduler {
                 continueScheduling = false;
             }
         }
-
+        Semester finalSemester = new Semester(8);
+        for (Course teaching : studentTeaching) {
+            finalSemester.addCourse(teaching);
+        }
+        semesters.add(finalSemester);
         return semesters;
     }
+
 
 
     private boolean courseHasNoUnscheduledPrerequisites(Course course, List<Semester> semesters) {
@@ -130,6 +140,21 @@ public class CourseScheduler {
 
     private boolean courseFitsInSemester(Course course, Semester semester, int maxCreditHoursPerSemester) {
         return semester.getTotalHours() + course.getHours() <= maxCreditHoursPerSemester;
+    }
+
+    private boolean noPrerequisitesInSemester(Course course, Semester semester) {
+        for (Course check : course.getPrerequisites()) {
+            return !semester.getCourses().contains(check);
+        }
+        return true;
+    }
+    private boolean noDuplicateCourses(Course course, Semester semester){
+        for (Course check : semester.getCourses()) {
+            if (check.getCourseId() == course.getCourseId()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private boolean scheduleConverged(List<Semester> semesters, int consecutiveUnchangedPasses) {
