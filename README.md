@@ -1,5 +1,31 @@
-# Final Capstone
-​
-This directory contains all of the starter projects for the final capstone.
-​
-Each project contains instructions that provides information about the starting code and explains how to get started with the final capstone project.
+# Unofficial Degree Planner
+
+![Degree Plan](images/Course Scheduler Output.png)
+
+## Overview
+
+The Unofficial Degree Planner is a web application that helps students plan their course schedules and track progress towards their degree. This application uses a backend API to recommend course schedules based on your academic requirements.
+
+## Features
+
+- View recommended course schedules.
+- Track completed and remaining courses.
+- Customizable semester limits and preferences.
+- Interactive and user-friendly interface.
+
+## Technologies Used
+
+- Vue.js
+- Node.js
+- Express.js
+- PostgreSQL
+- JGraphT (Java Graph Library)
+- Spring Boot (Java Framework)
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js and npm
+- Java Development Kit (JDK)
+- PostgreSQL database
