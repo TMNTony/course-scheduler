@@ -1,5 +1,7 @@
 # Unofficial Degree Planner
 
+![Degree Plan](images/Course Scheduler Output.png)
+
 ## Overview
 
 The Unofficial Degree Planner is a web application that helps students plan their course schedules and track progress towards their degree. This application uses a backend API to recommend course schedules based on your academic requirements.
