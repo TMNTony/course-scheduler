@@ -1,5 +1,5 @@
 # Unofficial Degree Planner
-
+SCREENSHOT
 ![Degree Plan](images/Course Scheduler Output.png)
 
 ## Overview
