@@ -34,7 +34,7 @@ public class JdbcCourseDao implements CourseDao {
         return courses;
     }
 
-    @Override
+    // Return list of untaken courses
     public List<Course> remainingCourses(int id) {
         List<Course> remainingCourses = new ArrayList<>();
         String sql = "SELECT * FROM courses WHERE course_id NOT IN (SELECT course_id FROM course_enrollments WHERE user_id = ?) " +
@@ -50,17 +50,17 @@ public class JdbcCourseDao implements CourseDao {
         return remainingCourses;
     }
 
-    @Override
+    // Calculates hours remaining to graduate
     public int remainingHours(int userId) {
         int remainingHours = 0;
         List<Course> remainingCourses = remainingCourses(userId);
-        for (Course course : remainingCourses){
+        for (Course course : remainingCourses) {
             remainingHours += course.getHours() * course.getTimesToTake();
         }
         return remainingHours;
     }
 
-    @Override
+    //Calculates total hours in degree plan
     public int totalHours() {
         int totalHours = 0;
         String sql = "SELECT course_id, hours, times_to_take FROM courses";
@@ -116,7 +116,7 @@ public class JdbcCourseDao implements CourseDao {
         return courseGraph.performTopologicalSort();
     }
 
-    private List<Course> getPrerequisitesForCourse(Course course) {
+    public List<Course> getPrerequisitesForCourse(Course course) {
         List<Course> prerequisites = new ArrayList<>();
         String sql = "SELECT c.course_id, c. course_prefix, c.course_number, c.course_name, c.hours, c.times_to_take " +
                 "FROM courses c " +

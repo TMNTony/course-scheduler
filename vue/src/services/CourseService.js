@@ -2,6 +2,6 @@ import axios from "axios";
 
 export default {
   getRecommendedCourseOrder(id) {
-    return axios.get(`/${id}/courses/recommended-order`);
+    return axios.get(`/courses/${id}/recommended-order`);
   },
 };

@@ -13,6 +13,6 @@ public interface CourseDao {
     int totalHours();
 
     boolean hasCircularDependencies();
-
     List<Course> performTopologicalSort(int id);
+    List<Course> getPrerequisitesForCourse(Course course);
 }

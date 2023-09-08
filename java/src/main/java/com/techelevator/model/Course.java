@@ -105,18 +105,7 @@ public class Course {
         this.timesToTake = timesToTake;
     }
 
-    //    @Override
-//    public String toString() {
-//        return "Course{" +
-//                "courseId=" + courseId +
-//                ", courseNumber='" + courseNumber + '\'' +
-//                ", courseName='" + courseName + '\'' +
-//                ", hours=" + hours +
-//                ", timesToTake=" + timesToTake +
-//                ", prerequisites=" + prerequisites +
-//                '}';
-//    }
-// Ensures nodes in graph are comparing correctly
+    // Ensures nodes in graph are comparing correctly
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
