@@ -20,11 +20,13 @@ public class JdbcCourseDao implements CourseDao {
     }
 
     @Override
-    public List<Course> allCourses() {
+    public List<Course> allCourses(int id) {
         List<Course> courses = new ArrayList<>();
-        String sql = "select * from courses";
+        String sql = "SELECT c.* FROM courses c " +
+                "INNER JOIN major_courses mc ON c.course_id = mc.course_id " +
+                "WHERE mc.major_id = ?";
 
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, id);
         while (results.next()) {
             Course course = mapRowToCourse(results);
             course.setPrerequisites(getPrerequisitesForCourse(course));
@@ -34,28 +36,37 @@ public class JdbcCourseDao implements CourseDao {
         return courses;
     }
 
-    // Return list of untaken courses
+    // Return list of courses not yet taken
     @Override
-    public List<Course> remainingCourses(int id) {
+    public List<Course> remainingCourses(int studentId) {
         List<Course> remainingCourses = new ArrayList<>();
-        String sql = "SELECT * FROM courses WHERE course_id NOT IN (SELECT course_id FROM course_enrollments WHERE user_id = ?) " +
-                "ORDER BY course_number";
 
+        String majorIdSql = "SELECT major_id FROM student_major WHERE student_id = ?";
+        int majorId = jdbcTemplate.queryForObject(majorIdSql, Integer.class, studentId);
 
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, id);
+        String sql = "SELECT c.* FROM courses c " +
+                "INNER JOIN major_courses mc ON c.course_id = mc.course_id " +
+                "WHERE c.course_id NOT IN (SELECT course_id FROM course_enrollments WHERE user_id = ?) " +
+                "AND mc.major_id = ? " +
+                "ORDER BY c.course_number";
+
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, studentId, majorId);
+
         while (results.next()) {
             Course course = mapRowToCourse(results);
             course.setPrerequisites(getPrerequisitesForCourse(course));
             remainingCourses.add(course);
         }
+
         return remainingCourses;
     }
 
+
     // Calculates hours remaining to graduate
     @Override
-    public int remainingHours(int userId) {
+    public int remainingHours(int studentId) {
         int remainingHours = 0;
-        List<Course> remainingCourses = remainingCourses(userId);
+        List<Course> remainingCourses = remainingCourses(studentId);
         for (Course course : remainingCourses) {
             remainingHours += course.getHours() * course.getTimesToTake();
         }
@@ -64,11 +75,13 @@ public class JdbcCourseDao implements CourseDao {
 
     //Calculates total hours in degree plan
     @Override
-    public int totalHours() {
+    public int totalHours(int majorId) {
         int totalHours = 0;
-        String sql = "SELECT course_id, hours, times_to_take FROM courses";
+        String sql = "SELECT c.* FROM courses c " +
+                "INNER JOIN major_courses mc ON c.course_id = mc.course_id " +
+                "WHERE mc.major_id = ?";
 
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, majorId);
         while (results.next()) {
             Course course = mapRowToCourse(results);
             totalHours += course.getHours() * course.getTimesToTake();

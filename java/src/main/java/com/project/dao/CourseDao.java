@@ -5,12 +5,12 @@ import com.project.model.Course;
 import java.util.List;
 
 public interface CourseDao {
-    List<Course> allCourses();
-    List<Course> remainingCourses(int id);
+    List<Course> allCourses(int studentId);
+    List<Course> remainingCourses(int studentId);
 
-    int remainingHours(int userId);
+    int remainingHours(int studentId);
 
-    int totalHours();
+    int totalHours(int majorId);
 
     boolean hasCircularDependencies();
     List<Course> performTopologicalSort(int id);

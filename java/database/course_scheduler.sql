@@ -1,12 +1,3 @@
---
--- PostgreSQL database dump
---
-
--- Dumped from database version 15.3
--- Dumped by pg_dump version 15.3
-
--- Started on 2023-09-12 11:54:06
-
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -22,11 +13,6 @@ SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
---
--- TOC entry 218 (class 1259 OID 16523)
--- Name: course_prerequisites; Type: TABLE; Schema: public; Owner: postgres
---
-
 CREATE TABLE public.course_prerequisites (
     course_id integer NOT NULL,
     prerequisite_course_id integer NOT NULL
@@ -35,10 +21,6 @@ CREATE TABLE public.course_prerequisites (
 
 ALTER TABLE public.course_prerequisites OWNER TO postgres;
 
---
--- TOC entry 219 (class 1259 OID 16606)
--- Name: courses; Type: TABLE; Schema: public; Owner: postgres
---
 
 CREATE TABLE public.courses (
     course_id integer NOT NULL,
@@ -52,10 +34,6 @@ CREATE TABLE public.courses (
 
 ALTER TABLE public.courses OWNER TO postgres;
 
---
--- TOC entry 220 (class 1259 OID 16609)
--- Name: Courses with Prerequisites; Type: VIEW; Schema: public; Owner: postgres
---
 
 CREATE VIEW public."Courses with Prerequisites" AS
  SELECT c1.course_name,
@@ -70,10 +48,6 @@ CREATE VIEW public."Courses with Prerequisites" AS
 
 ALTER TABLE public."Courses with Prerequisites" OWNER TO postgres;
 
---
--- TOC entry 217 (class 1259 OID 16507)
--- Name: course_enrollments; Type: TABLE; Schema: public; Owner: postgres
---
 
 CREATE TABLE public.course_enrollments (
     enrollment_id integer NOT NULL,
@@ -84,10 +58,6 @@ CREATE TABLE public.course_enrollments (
 
 ALTER TABLE public.course_enrollments OWNER TO postgres;
 
---
--- TOC entry 216 (class 1259 OID 16506)
--- Name: course_enrollments_enrollment_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
 
 CREATE SEQUENCE public.course_enrollments_enrollment_id_seq
     AS integer
@@ -100,19 +70,9 @@ CREATE SEQUENCE public.course_enrollments_enrollment_id_seq
 
 ALTER TABLE public.course_enrollments_enrollment_id_seq OWNER TO postgres;
 
---
--- TOC entry 3401 (class 0 OID 0)
--- Dependencies: 216
--- Name: course_enrollments_enrollment_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
 
 ALTER SEQUENCE public.course_enrollments_enrollment_id_seq OWNED BY public.course_enrollments.enrollment_id;
 
-
---
--- TOC entry 225 (class 1259 OID 16656)
--- Name: majors; Type: TABLE; Schema: public; Owner: postgres
---
 
 CREATE TABLE public.majors (
     major_id integer NOT NULL,
@@ -122,10 +82,6 @@ CREATE TABLE public.majors (
 
 ALTER TABLE public.majors OWNER TO postgres;
 
---
--- TOC entry 224 (class 1259 OID 16655)
--- Name: majors_major_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
 
 CREATE SEQUENCE public.majors_major_id_seq
     AS integer
@@ -138,19 +94,9 @@ CREATE SEQUENCE public.majors_major_id_seq
 
 ALTER TABLE public.majors_major_id_seq OWNER TO postgres;
 
---
--- TOC entry 3403 (class 0 OID 0)
--- Dependencies: 224
--- Name: majors_major_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
 
 ALTER SEQUENCE public.majors_major_id_seq OWNED BY public.majors.major_id;
 
-
---
--- TOC entry 223 (class 1259 OID 16640)
--- Name: student_advisor; Type: TABLE; Schema: public; Owner: postgres
---
 
 CREATE TABLE public.student_advisor (
     student_id integer NOT NULL,
@@ -160,10 +106,6 @@ CREATE TABLE public.student_advisor (
 
 ALTER TABLE public.student_advisor OWNER TO postgres;
 
---
--- TOC entry 226 (class 1259 OID 16662)
--- Name: student_major; Type: TABLE; Schema: public; Owner: postgres
---
 
 CREATE TABLE public.student_major (
     student_id integer NOT NULL,
@@ -173,10 +115,6 @@ CREATE TABLE public.student_major (
 
 ALTER TABLE public.student_major OWNER TO postgres;
 
---
--- TOC entry 222 (class 1259 OID 16634)
--- Name: students; Type: TABLE; Schema: public; Owner: postgres
---
 
 CREATE TABLE public.students (
     student_id integer NOT NULL,
@@ -187,10 +125,6 @@ CREATE TABLE public.students (
 
 ALTER TABLE public.students OWNER TO postgres;
 
---
--- TOC entry 221 (class 1259 OID 16633)
--- Name: students_student_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
 
 CREATE SEQUENCE public.students_student_id_seq
     AS integer
@@ -203,19 +137,9 @@ CREATE SEQUENCE public.students_student_id_seq
 
 ALTER TABLE public.students_student_id_seq OWNER TO postgres;
 
---
--- TOC entry 3404 (class 0 OID 0)
--- Dependencies: 221
--- Name: students_student_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
 
 ALTER SEQUENCE public.students_student_id_seq OWNED BY public.students.student_id;
 
-
---
--- TOC entry 215 (class 1259 OID 16464)
--- Name: users; Type: TABLE; Schema: public; Owner: postgres
---
 
 CREATE TABLE public.users (
     user_id integer NOT NULL,
@@ -227,10 +151,6 @@ CREATE TABLE public.users (
 
 ALTER TABLE public.users OWNER TO postgres;
 
---
--- TOC entry 214 (class 1259 OID 16463)
--- Name: users_user_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
 
 CREATE SEQUENCE public.users_user_id_seq
     AS integer
@@ -243,62 +163,25 @@ CREATE SEQUENCE public.users_user_id_seq
 
 ALTER TABLE public.users_user_id_seq OWNER TO postgres;
 
---
--- TOC entry 3406 (class 0 OID 0)
--- Dependencies: 214
--- Name: users_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
 
 ALTER SEQUENCE public.users_user_id_seq OWNED BY public.users.user_id;
 
 
---
--- TOC entry 3209 (class 2604 OID 16510)
--- Name: course_enrollments enrollment_id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
 ALTER TABLE ONLY public.course_enrollments ALTER COLUMN enrollment_id SET DEFAULT nextval('public.course_enrollments_enrollment_id_seq'::regclass);
 
-
---
--- TOC entry 3211 (class 2604 OID 16659)
--- Name: majors major_id; Type: DEFAULT; Schema: public; Owner: postgres
---
 
 ALTER TABLE ONLY public.majors ALTER COLUMN major_id SET DEFAULT nextval('public.majors_major_id_seq'::regclass);
 
 
---
--- TOC entry 3210 (class 2604 OID 16637)
--- Name: students student_id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
 ALTER TABLE ONLY public.students ALTER COLUMN student_id SET DEFAULT nextval('public.students_student_id_seq'::regclass);
 
-
---
--- TOC entry 3208 (class 2604 OID 16467)
--- Name: users user_id; Type: DEFAULT; Schema: public; Owner: postgres
---
 
 ALTER TABLE ONLY public.users ALTER COLUMN user_id SET DEFAULT nextval('public.users_user_id_seq'::regclass);
 
 
---
--- TOC entry 3384 (class 0 OID 16507)
--- Dependencies: 217
--- Data for Name: course_enrollments; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
 COPY public.course_enrollments (enrollment_id, course_id, user_id) FROM stdin;
 \.
 
-
---
--- TOC entry 3385 (class 0 OID 16523)
--- Dependencies: 218
--- Data for Name: course_prerequisites; Type: TABLE DATA; Schema: public; Owner: postgres
---
 
 COPY public.course_prerequisites (course_id, prerequisite_course_id) FROM stdin;
 25	17
@@ -377,12 +260,6 @@ COPY public.course_prerequisites (course_id, prerequisite_course_id) FROM stdin;
 \.
 
 
---
--- TOC entry 3386 (class 0 OID 16606)
--- Dependencies: 219
--- Data for Name: courses; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
 COPY public.courses (course_id, course_prefix, course_number, course_name, hours, times_to_take) FROM stdin;
 16	MU	100	Recital	1	7
 2	BY	101	General Biology	3	1
@@ -446,51 +323,21 @@ COPY public.courses (course_id, course_prefix, course_number, course_name, hours
 \.
 
 
---
--- TOC entry 3391 (class 0 OID 16656)
--- Dependencies: 225
--- Data for Name: majors; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
 COPY public.majors (major_id, major) FROM stdin;
 \.
 
-
---
--- TOC entry 3389 (class 0 OID 16640)
--- Dependencies: 223
--- Data for Name: student_advisor; Type: TABLE DATA; Schema: public; Owner: postgres
---
 
 COPY public.student_advisor (student_id, advisor_id) FROM stdin;
 \.
 
 
---
--- TOC entry 3392 (class 0 OID 16662)
--- Dependencies: 226
--- Data for Name: student_major; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
 COPY public.student_major (student_id, major_id) FROM stdin;
 \.
 
 
---
--- TOC entry 3388 (class 0 OID 16634)
--- Dependencies: 222
--- Data for Name: students; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
 COPY public.students (student_id, first_name, last_name) FROM stdin;
 \.
 
-
---
--- TOC entry 3382 (class 0 OID 16464)
--- Dependencies: 215
--- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
---
 
 COPY public.users (user_id, username, password_hash, role) FROM stdin;
 1	user	$2a$08$UkVvwpULis18S19S5pZFn.YHPZt3oaqHZnDwqbCW9pft6uFtkXKDC	ROLE_USER
@@ -498,254 +345,101 @@ COPY public.users (user_id, username, password_hash, role) FROM stdin;
 \.
 
 
---
--- TOC entry 3408 (class 0 OID 0)
--- Dependencies: 216
--- Name: course_enrollments_enrollment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
 SELECT pg_catalog.setval('public.course_enrollments_enrollment_id_seq', 1, false);
 
-
---
--- TOC entry 3409 (class 0 OID 0)
--- Dependencies: 224
--- Name: majors_major_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
 
 SELECT pg_catalog.setval('public.majors_major_id_seq', 1, false);
 
 
---
--- TOC entry 3410 (class 0 OID 0)
--- Dependencies: 221
--- Name: students_student_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
 SELECT pg_catalog.setval('public.students_student_id_seq', 1, false);
 
 
---
--- TOC entry 3411 (class 0 OID 0)
--- Dependencies: 214
--- Name: users_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
 SELECT pg_catalog.setval('public.users_user_id_seq', 2, true);
 
-
---
--- TOC entry 3217 (class 2606 OID 16512)
--- Name: course_enrollments course_enrollments_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
 
 ALTER TABLE ONLY public.course_enrollments
     ADD CONSTRAINT course_enrollments_pkey PRIMARY KEY (enrollment_id);
 
 
---
--- TOC entry 3219 (class 2606 OID 16697)
--- Name: course_prerequisites course_prerequisites_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
 ALTER TABLE ONLY public.course_prerequisites
     ADD CONSTRAINT course_prerequisites_pkey PRIMARY KEY (course_id, prerequisite_course_id);
 
-
---
--- TOC entry 3227 (class 2606 OID 16661)
--- Name: majors majors_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
 
 ALTER TABLE ONLY public.majors
     ADD CONSTRAINT majors_pkey PRIMARY KEY (major_id);
 
 
---
--- TOC entry 3221 (class 2606 OID 16678)
--- Name: courses pk_course_id; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
 ALTER TABLE ONLY public.courses
     ADD CONSTRAINT pk_course_id PRIMARY KEY (course_id);
 
-
---
--- TOC entry 3213 (class 2606 OID 16469)
--- Name: users pk_user; Type: CONSTRAINT; Schema: public; Owner: postgres
---
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT pk_user PRIMARY KEY (user_id);
 
 
---
--- TOC entry 3225 (class 2606 OID 16644)
--- Name: student_advisor student_advisor_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
 ALTER TABLE ONLY public.student_advisor
     ADD CONSTRAINT student_advisor_pkey PRIMARY KEY (student_id, advisor_id);
 
-
---
--- TOC entry 3229 (class 2606 OID 16666)
--- Name: student_major student_major_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
 
 ALTER TABLE ONLY public.student_major
     ADD CONSTRAINT student_major_pkey PRIMARY KEY (student_id, major_id);
 
 
---
--- TOC entry 3223 (class 2606 OID 16639)
--- Name: students students_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
 ALTER TABLE ONLY public.students
     ADD CONSTRAINT students_pkey PRIMARY KEY (student_id);
 
-
---
--- TOC entry 3215 (class 2606 OID 16471)
--- Name: users users_username_key; Type: CONSTRAINT; Schema: public; Owner: postgres
---
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_username_key UNIQUE (username);
 
 
---
--- TOC entry 3230 (class 2606 OID 16590)
--- Name: course_enrollments course_enrollments_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
 ALTER TABLE ONLY public.course_enrollments
     ADD CONSTRAINT course_enrollments_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(user_id);
 
-
---
--- TOC entry 3232 (class 2606 OID 16679)
--- Name: course_prerequisites course_prerequisites_course_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
 
 ALTER TABLE ONLY public.course_prerequisites
     ADD CONSTRAINT course_prerequisites_course_id_fkey FOREIGN KEY (course_id) REFERENCES public.courses(course_id);
 
 
---
--- TOC entry 3231 (class 2606 OID 16703)
--- Name: course_enrollments fk_course_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
 ALTER TABLE ONLY public.course_enrollments
     ADD CONSTRAINT fk_course_id FOREIGN KEY (course_id) REFERENCES public.courses(course_id);
 
-
---
--- TOC entry 3233 (class 2606 OID 16698)
--- Name: course_prerequisites fk_prerequisite; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
 
 ALTER TABLE ONLY public.course_prerequisites
     ADD CONSTRAINT fk_prerequisite FOREIGN KEY (prerequisite_course_id) REFERENCES public.courses(course_id);
 
 
---
--- TOC entry 3234 (class 2606 OID 16650)
--- Name: student_advisor student_advisor_advisor_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
 ALTER TABLE ONLY public.student_advisor
     ADD CONSTRAINT student_advisor_advisor_id_fkey FOREIGN KEY (advisor_id) REFERENCES public.users(user_id);
 
-
---
--- TOC entry 3235 (class 2606 OID 16645)
--- Name: student_advisor student_advisor_student_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
 
 ALTER TABLE ONLY public.student_advisor
     ADD CONSTRAINT student_advisor_student_id_fkey FOREIGN KEY (student_id) REFERENCES public.students(student_id);
 
 
---
--- TOC entry 3236 (class 2606 OID 16672)
--- Name: student_major student_major_major_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
 ALTER TABLE ONLY public.student_major
     ADD CONSTRAINT student_major_major_id_fkey FOREIGN KEY (major_id) REFERENCES public.majors(major_id);
 
-
---
--- TOC entry 3237 (class 2606 OID 16667)
--- Name: student_major student_major_student_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
 
 ALTER TABLE ONLY public.student_major
     ADD CONSTRAINT student_major_student_id_fkey FOREIGN KEY (student_id) REFERENCES public.students(student_id);
 
 
---
--- TOC entry 3398 (class 0 OID 0)
--- Dependencies: 218
--- Name: TABLE course_prerequisites; Type: ACL; Schema: public; Owner: postgres
---
-
 GRANT ALL ON TABLE public.course_prerequisites TO owner;
 
-
---
--- TOC entry 3399 (class 0 OID 0)
--- Dependencies: 219
--- Name: TABLE courses; Type: ACL; Schema: public; Owner: postgres
---
 
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,UPDATE ON TABLE public.courses TO owner;
 
 
---
--- TOC entry 3400 (class 0 OID 0)
--- Dependencies: 217
--- Name: TABLE course_enrollments; Type: ACL; Schema: public; Owner: postgres
---
-
 GRANT ALL ON TABLE public.course_enrollments TO owner;
 
 
---
--- TOC entry 3402 (class 0 OID 0)
--- Dependencies: 216
--- Name: SEQUENCE course_enrollments_enrollment_id_seq; Type: ACL; Schema: public; Owner: postgres
---
-
 GRANT SELECT,USAGE ON SEQUENCE public.course_enrollments_enrollment_id_seq TO owner;
 
-
---
--- TOC entry 3405 (class 0 OID 0)
--- Dependencies: 215
--- Name: TABLE users; Type: ACL; Schema: public; Owner: postgres
---
 
 GRANT ALL ON TABLE public.users TO owner;
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.users TO appuser;
 
 
---
--- TOC entry 3407 (class 0 OID 0)
--- Dependencies: 214
--- Name: SEQUENCE users_user_id_seq; Type: ACL; Schema: public; Owner: postgres
---
-
 GRANT ALL ON SEQUENCE public.users_user_id_seq TO owner;
 GRANT SELECT,USAGE ON SEQUENCE public.users_user_id_seq TO appuser;
-
-
--- Completed on 2023-09-12 11:54:06
-
---
--- PostgreSQL database dump complete
---
-

@@ -13,6 +13,7 @@ public class Student {
         this.majorId = majorId;
         this.advisorId = advisorId;
     }
+    public Student(){};
     public int getStudentId() {
         return studentId;
     }

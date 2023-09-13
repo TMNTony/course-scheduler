@@ -1,92 +1,107 @@
 <template>
   <div class="home">
-    <h1>Unofficial Degree Plan</h1>
-    <div class="semesters">
-      <semester
-        class="semester"
-        v-for="semester in this.semesters"
-        :key="semester.semesterId"
-        :semester="semester"
+    <h1>Unofficial Degree Planner</h1>
+    <div>My Students</div>
+    <select name="students" id="students">
+      <option
+        v-for="student in students"
+        :key="student.studentId"
+        value="student.studentId"
+      >
+        {{ student.firstName }} {{ student.lastName }}
+      </option>
+    </select>
+    <button @click="add">Add Student</button>
+    <form v-if="adding" action="">
+      <label for="firstName">First Name</label>
+      <input
+        type="text"
+        name="firstName"
+        id="firstName"
+        v-model="newStudent.firstName"
       />
-    </div>
+      <label for="lastName">Last Name</label>
+      <input
+        type="text"
+        name="lastName"
+        id="lastName"
+        v-model="newStudent.lastName"
+      />
+      <label for="majorId">Major</label>
+      <select name="majorId" id="majorId" v-model="majorId">
+        <option v-for="major in majors" :key="major.majorId" value="major.majorId">{{major.major}}</option>
+      </select>
+    </form>
   </div>
 </template>
 
 <script>
-import courseService from "../services/CourseService";
-import Semester from "../components/Semester";
+import StudentService from "../services/StudentService";
+import MajorService from "../services/MajorService";
+import CombinedService from "../services/CombinedService"
 export default {
   name: "home",
-  components: {
-    Semester,
-  },
+  components: {},
   data() {
     return {
-      userId: 1,
+      adding: false,
+      userId: null,
       semesters: [],
+      students: [],
+      majors: [],
+      newStudent: {
+        studentId: null,
+        firstName: "",
+        lastName: "",
+        majorId: null,
+        advisorId: this.userId,
+      },
+      majorId: null,
     };
   },
   methods: {
-    getDegreePlan() {
-      courseService
-        .getRecommendedCourseOrder(this.userId)
+    getStudents() {
+      StudentService.getStudents(this.userId)
         .then((response) => {
-          // Parse the JSON response into JavaScript objects
-          const data = response.data.map((semester) => {
-            return {
-              semesterId: semester.semesterId,
-              courses: semester.courses.map((course) => {
-                return {
-                  courseId: course.courseId,
-                  coursePrefix: course.coursePrefix,
-                  courseNumber: course.courseNumber,
-                  courseName: course.courseName,
-                  hours: course.hours,
-                };
-              }),
-              totalHours: semester.totalHours,
-            };
-          });
-
-          // Update the semesters data
-          this.semesters = data;
+          this.students = response.data;
         })
         .catch((error) => {
-          // Handle any errors here
           console.error(error);
         });
     },
+    getUserId() {
+      this.userId = this.$store.state.user.id;
+    },
+    getMajors() {
+      MajorService.getMajors()
+        .then((response) => {
+          this.majors = response.data;
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
+    getCombinedData(){
+      CombinedService.getCombinedData(this.userId)
+      .then((response) => {
+        this.students = response.data.students
+        this.majors = response.data.majors
+      })
+      .catch((error) => {
+          console.error(error);
+        });
+    },
+    add() {
+      this.adding = !this.adding;
+    },
   },
   created() {
-    this.getDegreePlan();
+    this.getUserId();
+    this.getCombinedData();
   },
 };
 </script>
 <style>
-.semesters {
-  width: 1000px;
-  display: flex; /* Apply flex layout */
-  flex-wrap: wrap; /* Allow wrapping to the next line */
-  justify-content: space-evenly
-  
-}
-.semester {
-  border: 2px solid #333;
-  border-radius: 10px;
-  background-color: #f9f9f9;
-  width: 300px;
-  height: auto;
-  margin: 20px;
-  display: grid;
-  bottom: 40px;
-  padding: 20px;
-  left: 10%;
-  font-size: 1rem;
-  text-decoration: none;
-  color: black;
-  transition: border 0.2s ease, transform 0.3s ease-in-out;
-  box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
-}
 h1 {
   text-align: center;
 }

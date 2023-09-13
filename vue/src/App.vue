@@ -8,7 +8,8 @@
   </div>
 </template>
 <style>
-#app {
+
+body {
   background-color: rgb(175, 175, 175);
 }
 </style>
