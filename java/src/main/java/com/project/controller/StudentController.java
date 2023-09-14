@@ -21,9 +21,10 @@ public class StudentController {
     }
 
     @RequestMapping(path = "", method = RequestMethod.POST)
-    public ResponseEntity createStudent(@RequestBody Student student) {
-        studentDao.createStudent(student);
-        return ResponseEntity.ok("Student created successfully");
+    public ResponseEntity<Integer> createStudent(@RequestBody Student student) {
+        int id = studentDao.createStudent(student);
+        System.out.println(id);
+        return ResponseEntity.ok(id);
     }
 
     @RequestMapping(path = "/students", method = RequestMethod.GET)

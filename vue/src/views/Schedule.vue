@@ -23,13 +23,14 @@ export default {
   data() {
     return {
       userId: null,
+      studentId: this.$route.params.id,
       semesters: [],
     };
   },
   methods: {
     getDegreePlan() {
       courseService
-        .getRecommendedCourseOrder(this.userId)
+        .getRecommendedCourseOrder(this.studentId)
         .then((response) => {
           // Parse the JSON response into JavaScript objects
           const data = response.data.map((semester) => {
@@ -62,8 +63,9 @@ export default {
   },
   created() {
     this.getUserId();
+    console.log(this.studentId)
     this.getDegreePlan();
-    console.log(this.userId)
+  
   },
 };
 </script>

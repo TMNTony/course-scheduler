@@ -8,7 +8,8 @@ export default {
       }
     });
   },
-  createStudent(student) {
-    return axios.post("", student);
+  async createStudent(student) {
+    const response = await axios.post("", student);
+    return response.data;
   },
 };

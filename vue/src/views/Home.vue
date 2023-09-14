@@ -12,7 +12,7 @@
       </option>
     </select>
     <button @click="add">Add Student</button>
-    <form v-if="adding" action="">
+    <form v-if="adding" v-on:submit.prevent="createStudent()">
       <label for="firstName">First Name</label>
       <input
         type="text"
@@ -29,8 +29,16 @@
       />
       <label for="majorId">Major</label>
       <select name="majorId" id="majorId" v-model="majorId">
-        <option v-for="major in majors" :key="major.majorId" value="major.majorId">{{major.major}}</option>
+        <option
+          v-for="major in majors"
+          :key="major.majorId"
+          :value="major.majorId"
+        >
+          {{ major.major }}
+        </option>
       </select>
+
+      <input type="submit" value="Create Student" />
     </form>
   </div>
 </template>
@@ -38,7 +46,7 @@
 <script>
 import StudentService from "../services/StudentService";
 import MajorService from "../services/MajorService";
-import CombinedService from "../services/CombinedService"
+import CombinedService from "../services/CombinedService";
 export default {
   name: "home",
   components: {},
@@ -54,7 +62,7 @@ export default {
         firstName: "",
         lastName: "",
         majorId: null,
-        advisorId: this.userId,
+        advisorId: null,
       },
       majorId: null,
     };
@@ -81,18 +89,43 @@ export default {
           console.error(error);
         });
     },
-    getCombinedData(){
+    getCombinedData() {
       CombinedService.getCombinedData(this.userId)
-      .then((response) => {
-        this.students = response.data.students
-        this.majors = response.data.majors
-      })
-      .catch((error) => {
+        .then((response) => {
+          this.students = response.data.students;
+          this.majors = response.data.majors;
+        })
+        .catch((error) => {
           console.error(error);
         });
     },
     add() {
       this.adding = !this.adding;
+    },
+    createStudent() {
+      this.newStudent.majorId = this.majorId;
+      this.newStudent.advisorId = this.userId;
+
+      StudentService.createStudent(this.newStudent)
+      .then((response) => {
+
+            const studentId = response;
+            
+            if (!isNaN(studentId)) {
+
+                this.$router.push({
+                    name: "schedule",
+                    params: {
+                        id: studentId
+                    }
+                });
+            } else {
+                console.error('Invalid student ID received:', response.data);
+            }
+        })
+        .catch((error) => {
+            console.error(error);
+        });
     },
   },
   created() {

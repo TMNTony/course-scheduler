@@ -21,7 +21,7 @@ public class JbdcStudentDao implements StudentDao {
     }
 
     @Override
-    public void createStudent(Student student) {
+    public int createStudent(Student student) {
         String sql = "INSERT INTO students (first_name, last_name) VALUES (?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder(); // Create a KeyHolder to retrieve the generated key
@@ -39,6 +39,8 @@ public class JbdcStudentDao implements StudentDao {
         // Now you have the generated studentId, and you can use it to insert into other tables
         insertIntoStudentMajor(studentId, student.getMajorId());
         insertIntoStudentAdvisor(studentId, student.getAdvisorId());
+
+        return studentId;
     }
 
     private void insertIntoStudentMajor(int studentId, int majorId) {

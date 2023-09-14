@@ -1,3 +1,5 @@
+
+
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -13,6 +15,7 @@ SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
+
 CREATE TABLE public.course_prerequisites (
     course_id integer NOT NULL,
     prerequisite_course_id integer NOT NULL
@@ -20,6 +23,7 @@ CREATE TABLE public.course_prerequisites (
 
 
 ALTER TABLE public.course_prerequisites OWNER TO postgres;
+
 
 
 CREATE TABLE public.courses (
@@ -49,6 +53,7 @@ CREATE VIEW public."Courses with Prerequisites" AS
 ALTER TABLE public."Courses with Prerequisites" OWNER TO postgres;
 
 
+
 CREATE TABLE public.course_enrollments (
     enrollment_id integer NOT NULL,
     course_id integer,
@@ -57,6 +62,7 @@ CREATE TABLE public.course_enrollments (
 
 
 ALTER TABLE public.course_enrollments OWNER TO postgres;
+
 
 
 CREATE SEQUENCE public.course_enrollments_enrollment_id_seq
@@ -71,7 +77,18 @@ CREATE SEQUENCE public.course_enrollments_enrollment_id_seq
 ALTER TABLE public.course_enrollments_enrollment_id_seq OWNER TO postgres;
 
 
+
 ALTER SEQUENCE public.course_enrollments_enrollment_id_seq OWNED BY public.course_enrollments.enrollment_id;
+
+
+
+CREATE TABLE public.major_courses (
+    major_id integer,
+    course_id integer
+);
+
+
+ALTER TABLE public.major_courses OWNER TO postgres;
 
 
 CREATE TABLE public.majors (
@@ -125,7 +142,6 @@ CREATE TABLE public.students (
 
 ALTER TABLE public.students OWNER TO postgres;
 
-
 CREATE SEQUENCE public.students_student_id_seq
     AS integer
     START WITH 1
@@ -137,9 +153,7 @@ CREATE SEQUENCE public.students_student_id_seq
 
 ALTER TABLE public.students_student_id_seq OWNER TO postgres;
 
-
 ALTER SEQUENCE public.students_student_id_seq OWNED BY public.students.student_id;
-
 
 CREATE TABLE public.users (
     user_id integer NOT NULL,
@@ -169,7 +183,6 @@ ALTER SEQUENCE public.users_user_id_seq OWNED BY public.users.user_id;
 
 ALTER TABLE ONLY public.course_enrollments ALTER COLUMN enrollment_id SET DEFAULT nextval('public.course_enrollments_enrollment_id_seq'::regclass);
 
-
 ALTER TABLE ONLY public.majors ALTER COLUMN major_id SET DEFAULT nextval('public.majors_major_id_seq'::regclass);
 
 
@@ -177,11 +190,6 @@ ALTER TABLE ONLY public.students ALTER COLUMN student_id SET DEFAULT nextval('pu
 
 
 ALTER TABLE ONLY public.users ALTER COLUMN user_id SET DEFAULT nextval('public.users_user_id_seq'::regclass);
-
-
-COPY public.course_enrollments (enrollment_id, course_id, user_id) FROM stdin;
-\.
-
 
 COPY public.course_prerequisites (course_id, prerequisite_course_id) FROM stdin;
 25	17
@@ -323,19 +331,71 @@ COPY public.courses (course_id, course_prefix, course_number, course_name, hours
 \.
 
 
+COPY public.major_courses (major_id, course_id) FROM stdin;
+1	1
+1	2
+1	3
+1	4
+1	5
+1	6
+1	7
+1	8
+1	9
+1	10
+1	11
+1	12
+1	13
+1	14
+1	15
+1	16
+1	17
+1	18
+1	19
+1	20
+1	21
+1	22
+1	23
+1	24
+1	25
+1	26
+1	27
+1	28
+1	29
+1	30
+1	31
+1	32
+1	33
+1	34
+1	35
+1	36
+1	37
+1	38
+1	39
+1	40
+1	41
+1	42
+1	43
+1	44
+1	45
+1	46
+1	47
+1	48
+1	49
+1	50
+1	51
+1	52
+1	53
+1	54
+1	55
+1	56
+1	57
+1	58
+1	59
+\.
+
+
 COPY public.majors (major_id, major) FROM stdin;
-\.
-
-
-COPY public.student_advisor (student_id, advisor_id) FROM stdin;
-\.
-
-
-COPY public.student_major (student_id, major_id) FROM stdin;
-\.
-
-
-COPY public.students (student_id, first_name, last_name) FROM stdin;
+1	Music Education - Instrumental
 \.
 
 
@@ -348,10 +408,10 @@ COPY public.users (user_id, username, password_hash, role) FROM stdin;
 SELECT pg_catalog.setval('public.course_enrollments_enrollment_id_seq', 1, false);
 
 
-SELECT pg_catalog.setval('public.majors_major_id_seq', 1, false);
+SELECT pg_catalog.setval('public.majors_major_id_seq', 1, true);
 
 
-SELECT pg_catalog.setval('public.students_student_id_seq', 1, false);
+SELECT pg_catalog.setval('public.students_student_id_seq', 21, true);
 
 
 SELECT pg_catalog.setval('public.users_user_id_seq', 2, true);
@@ -397,6 +457,10 @@ ALTER TABLE ONLY public.course_enrollments
     ADD CONSTRAINT course_enrollments_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(user_id);
 
 
+ALTER TABLE ONLY public.major_courses
+    ADD CONSTRAINT course_id_fkey FOREIGN KEY (course_id) REFERENCES public.courses(course_id);
+
+
 ALTER TABLE ONLY public.course_prerequisites
     ADD CONSTRAINT course_prerequisites_course_id_fkey FOREIGN KEY (course_id) REFERENCES public.courses(course_id);
 
@@ -410,19 +474,23 @@ ALTER TABLE ONLY public.course_prerequisites
 
 
 ALTER TABLE ONLY public.student_advisor
-    ADD CONSTRAINT student_advisor_advisor_id_fkey FOREIGN KEY (advisor_id) REFERENCES public.users(user_id);
+    ADD CONSTRAINT fk_student_advisor_student_id FOREIGN KEY (student_id) REFERENCES public.students(student_id) ON DELETE CASCADE;
+
+
+ALTER TABLE ONLY public.student_major
+    ADD CONSTRAINT fk_student_major_student_id FOREIGN KEY (student_id) REFERENCES public.students(student_id) ON DELETE CASCADE;
+
+
+ALTER TABLE ONLY public.major_courses
+    ADD CONSTRAINT major_id_fkey FOREIGN KEY (major_id) REFERENCES public.majors(major_id);
 
 
 ALTER TABLE ONLY public.student_advisor
-    ADD CONSTRAINT student_advisor_student_id_fkey FOREIGN KEY (student_id) REFERENCES public.students(student_id);
+    ADD CONSTRAINT student_advisor_advisor_id_fkey FOREIGN KEY (advisor_id) REFERENCES public.users(user_id);
 
 
 ALTER TABLE ONLY public.student_major
     ADD CONSTRAINT student_major_major_id_fkey FOREIGN KEY (major_id) REFERENCES public.majors(major_id);
-
-
-ALTER TABLE ONLY public.student_major
-    ADD CONSTRAINT student_major_student_id_fkey FOREIGN KEY (student_id) REFERENCES public.students(student_id);
 
 
 GRANT ALL ON TABLE public.course_prerequisites TO owner;
@@ -437,9 +505,25 @@ GRANT ALL ON TABLE public.course_enrollments TO owner;
 GRANT SELECT,USAGE ON SEQUENCE public.course_enrollments_enrollment_id_seq TO owner;
 
 
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.majors TO PUBLIC;
+
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.student_advisor TO PUBLIC;
+
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.student_major TO PUBLIC;
+
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.students TO PUBLIC;
+
+
+GRANT SELECT,USAGE ON SEQUENCE public.students_student_id_seq TO PUBLIC;
+
 GRANT ALL ON TABLE public.users TO owner;
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.users TO appuser;
 
 
 GRANT ALL ON SEQUENCE public.users_user_id_seq TO owner;
 GRANT SELECT,USAGE ON SEQUENCE public.users_user_id_seq TO appuser;
+
+
