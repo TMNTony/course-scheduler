@@ -20,6 +20,9 @@ export default {
   components: {
     Semester,
   },
+  props: {
+    student: Object,
+  },
   data() {
     return {
       userId: null,
@@ -57,15 +60,13 @@ export default {
           console.error(error);
         });
     },
-    getUserId(){
-        this.userId = this.$store.state.user.userId;
-    }
+    getUserId() {
+      this.userId = this.$store.state.user.userId;
+    },
   },
   created() {
     this.getUserId();
-    console.log(this.studentId)
     this.getDegreePlan();
-  
   },
 };
 </script>
@@ -74,8 +75,7 @@ export default {
   width: 1000px;
   display: flex; /* Apply flex layout */
   flex-wrap: wrap; /* Allow wrapping to the next line */
-  justify-content: space-evenly
-  
+  justify-content: space-evenly;
 }
 .semester {
   border: 2px solid #333;

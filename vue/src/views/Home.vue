@@ -2,15 +2,26 @@
   <div class="home">
     <h1>Unofficial Degree Planner</h1>
     <div>My Students</div>
-    <select name="students" id="students">
+    <select name="students" id="students" v-model="studentId">
       <option
         v-for="student in students"
         :key="student.studentId"
-        value="student.studentId"
+        :value="student.studentId"
+ 
       >
         {{ student.firstName }} {{ student.lastName }}
       </option>
     </select>
+    <router-link v-if="studentId != null"
+      :to="{
+        name: 'schedule',
+        params: {
+          id: studentId,
+        },
+      }"
+    >
+      Go</router-link
+    >
     <button @click="add">Add Student</button>
     <form v-if="adding" v-on:submit.prevent="createStudent()">
       <label for="firstName">First Name</label>
@@ -54,6 +65,7 @@ export default {
     return {
       adding: false,
       userId: null,
+      studentId: null,
       semesters: [],
       students: [],
       majors: [],
@@ -107,24 +119,22 @@ export default {
       this.newStudent.advisorId = this.userId;
 
       StudentService.createStudent(this.newStudent)
-      .then((response) => {
+        .then((response) => {
+          const studentId = response;
 
-            const studentId = response;
-            
-            if (!isNaN(studentId)) {
-
-                this.$router.push({
-                    name: "schedule",
-                    params: {
-                        id: studentId
-                    }
-                });
-            } else {
-                console.error('Invalid student ID received:', response.data);
-            }
+          if (!isNaN(studentId)) {
+            this.$router.push({
+              name: "schedule",
+              params: {
+                id: studentId,
+              },
+            });
+          } else {
+            console.error("Invalid student ID received:", response.data);
+          }
         })
         .catch((error) => {
-            console.error(error);
+          console.error(error);
         });
     },
   },
