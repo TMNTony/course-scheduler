@@ -1,8 +1,8 @@
 <template>
   <div class="home">
     <h1>Unofficial Degree Planner</h1>
-    <div>My Students</div>
-    <select name="students" id="students" v-model="studentId">
+    <div v-if="students.length > 0">My Students
+    <select  name="students" id="students" v-model="studentId">
       <option
         v-for="student in students"
         :key="student.studentId"
@@ -12,6 +12,7 @@
         {{ student.firstName }} {{ student.lastName }}
       </option>
     </select>
+  </div>
     <router-link v-if="studentId != null"
       :to="{
         name: 'schedule',

@@ -61,6 +61,30 @@ public class JdbcCourseDao implements CourseDao {
         return remainingCourses;
     }
 
+    @Override
+    public List<Course> takenCourses(int studentId) {
+        List<Course> takenCourses = new ArrayList<>();
+
+        String majorIdSql = "SELECT major_id FROM student_major WHERE student_id = ?";
+        int majorId = jdbcTemplate.queryForObject(majorIdSql, Integer.class, studentId);
+
+        String sql = "SELECT c.* FROM courses c " +
+                "INNER JOIN major_courses mc ON c.course_id = mc.course_id " +
+                "WHERE c.course_id IN (SELECT course_id FROM course_enrollments WHERE user_id = ?) " +
+                "AND mc.major_id = ? " +
+                "ORDER BY c.course_number";
+
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, studentId, majorId);
+
+        while (results.next()) {
+            Course course = mapRowToCourse(results);
+            course.setPrerequisites(getPrerequisitesForCourse(course));
+            takenCourses.add(course);
+        }
+
+        return takenCourses;
+    }
+
 
     // Calculates hours remaining to graduate
     @Override

@@ -224,7 +224,6 @@ public class CourseScheduler {
             } else if (isStudentTeachingCourse(courseId)) {
                 studentTeaching.add(course);
             } else if (coursePrefix.startsWith("MU")) {
-                System.out.println(course.getCourseName());
                 addToSemesterList(remainingCoursesWithMUPrefix, course, course.getTimesToTake());
             } else {
                 remainingCoursesWithoutMUPrefix.add(course);

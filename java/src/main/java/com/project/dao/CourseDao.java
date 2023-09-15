@@ -8,6 +8,8 @@ public interface CourseDao {
     List<Course> allCourses(int studentId);
     List<Course> remainingCourses(int studentId);
 
+    List<Course> takenCourses(int studentId);
+
     int remainingHours(int studentId);
 
     int totalHours(int majorId);

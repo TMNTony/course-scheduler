@@ -1,11 +1,12 @@
 <template>
   <div>
     <h3 class="semesterName">{{ this.semesterName }}</h3>
-    <div v-for="course in semester.courses" :key="course.courseId">
+    <div class="courses" v-for="course in semester.courses" :key="course.courseId">
       <div>
         {{ course.coursePrefix }} {{ course.courseNumber }}:
         {{ course.courseName }}
       </div>
+      <button>Mark Complete</button>
     </div>
     <div>Total Hours: {{ semester.totalHours }}</div>
   </div>
@@ -71,5 +72,8 @@ export default {
 <style>
 .semesterName {
     text-align: center;
+}
+.courses  {
+  text-align: left;
 }
 </style>
